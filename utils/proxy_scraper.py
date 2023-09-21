@@ -109,7 +109,7 @@ class ProxyScraper:
                 response = self._response.get_session_response(
                     url=f'https://www.proxy-list.download/api/v1/get?type={proxy_type}')
                 if response.status_code == 200:
-                    response_soup = BeautifulSoup(response.text, features="xml")
+                    response_soup = BeautifulSoup(response.text, features="lxml")
                     response_str = response_soup.text.strip()
                     response_content = [content.strip() for content in response_str.split()]
                     if proxy_type == "http":
@@ -141,7 +141,7 @@ class ProxyScraper:
                 response = self._response.get_session_response(
                     url=f'https://www.proxyscan.io/api/proxy?format=txt&type={proxy_type}&limit=1000')
                 if response == 200:
-                    response_soup = BeautifulSoup(response.text, features="xml")
+                    response_soup = BeautifulSoup(response.text, features="lxml")
                     response_str = response_soup.text.strip()
                     response_content = [content.strip() for content in response_str.split()]
                     if proxy_type == "http":

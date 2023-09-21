@@ -4,7 +4,7 @@ from utils.proxy_handlers import ProxyCheckers
 from utils.proxy_scraper import ProxyScraper
 from os.path import exists, abspath
 from os import makedirs
-
+from final_processing import processing_socks4, processing_socks5
 
 class Proxies:
     DIR_PATH = "./proxy_files"
@@ -77,18 +77,18 @@ class Proxies:
         print("[+] Fetching Proxies from different sources")
         http, https, socks4, socks5 = self._proxy_scraper.scrape_proxies_lists()
         # this section is for validation of proxies
-#         p_types = ["http", "https", "socks4", "socks5"]
-#         print(f"[+] Validating Proxies: Working thread {self._num_workers}")
-#         with ThreadPoolExecutor(max_workers=self._num_workers) as executor:
-#             futures = []
-#             for proxy_type in p_types:
-#                 print(f"[+] Validating Proxies of Type: {proxy_type}")
-#                 future = executor.submit(self._validate_proxies, http, proxy_type)
-#                 futures.append(future)
-#             for future in futures:
-#                 if self._stop_requested:
-#                     break
-#                 future.result()
+        p_types = ["http", "https", "socks4", "socks5"]
+        print(f"[+] Validating Proxies: Working thread {self._num_workers}")
+        with ThreadPoolExecutor(max_workers=self._num_workers) as executor:
+            futures = []
+            for proxy_type in p_types:
+                print(f"[+] Validating Proxies of Type: {proxy_type}")
+                future = executor.submit(self._validate_proxies, http, proxy_type)
+                futures.append(future)
+            for future in futures:
+                if self._stop_requested:
+                    break
+                future.result()
         self._valid_http.update(http)
         self._valid_https.update(https)
         self._valid_socks4.update(socks4)
@@ -101,3 +101,6 @@ if __name__ == '__main__':
     number_of_threads = 500
     proxies_fetcher = Proxies(num_workers=number_of_threads)
     proxies_fetcher.proxies_scraper()
+    processing_socks4()
+    processing_socks5()
+
